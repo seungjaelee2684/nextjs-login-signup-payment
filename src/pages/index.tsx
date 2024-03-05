@@ -22,7 +22,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -36,9 +35,9 @@ import { ArrowRight } from "lucide-react";
 type RegisterInput = z.infer<typeof registerSchema>;
 
 export default function Home() {
-  const [step, setStep] = useState<number>(0);
+  const [step, setStep] = useState<number>(0); // 페이지 넘기는 용도
 
-  const { toast } = useToast();
+  const { toast } = useToast(); // 알림 메세지
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -51,10 +50,9 @@ export default function Home() {
     },
   });
 
-  // log the form data whenever it changes
-  console.log(form.watch());
+  console.log(form.watch()); // useFormd에 변경된 입력값을 디버깅
 
-  function onSubmit(data: RegisterInput) {
+  function onSubmit(data: RegisterInput) { // 비밀번호 확인 작업
     const { password, confirmPassword } = data;
     if (password !== confirmPassword) {
       toast({
@@ -68,6 +66,7 @@ export default function Home() {
   }
 
   return (
+    // 
     <div className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
       <Card className={cn("w-[380px]")}>
         <CardHeader>
@@ -80,7 +79,7 @@ export default function Home() {
               onSubmit={form.handleSubmit(onSubmit)}
               className="relative space-y-3 overflow-x-hidden"
             >
-              <motion.div
+              <motion.div // framer-motion 라이브러리를 이용한 페이지 넘김 애니메이션 구현
                 className={cn("space-y-3")}
                 animate={{ translateX: `${step * -100}%` }}
                 transition={{ ease: "easeInOut" }}
@@ -194,18 +193,20 @@ export default function Home() {
                 <Button
                   type="button"
                   className={cn({ hidden: step === 1 })}
-                  onClick={() => {
+                  onClick={() => { // validation 작업
                     form.trigger(["phone", "email", "username", "role"]);
                     const phoneState = form.getFieldState("phone");
                     const emailState = form.getFieldState("email");
                     const usernameState = form.getFieldState("username");
                     const roleState = form.getFieldState("role");
 
+                    // validate 조건에 부합하지 않는 경우
                     if (!phoneState.isDirty || phoneState.invalid) return;
                     if (!emailState.isDirty || emailState.invalid) return;
                     if (!usernameState.isDirty || usernameState.invalid) return;
                     if (!roleState.isDirty || roleState.invalid) return;
 
+                    // 페이지 state 변경 (페이지 넘김)
                     setStep(1);
                   }}
                 >
